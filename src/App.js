@@ -141,8 +141,8 @@ class App extends React.Component {
           formula: this.state.formula.slice(0,-1) + event.target.value + this.state.result
       })})
     }
-    //If input is valid and there is not already a result displayed
-    else if(this.state.output !== "Misused operator" && (/^[^=]*$/).test(this.state.formula)) {
+    //If input is valid and there is not already a result displayed and is not the first command on calculator
+    else if(this.state.output !== "Misused operator" && (/^[^=]*$/).test(this.state.formula) && this.state.formula !== "") {
       this.setState({
         result: toFixed(evaluate(this.state.formula))
         }, () => {
