@@ -167,8 +167,8 @@ class App extends React.Component {
         output: '0' + event.target.value,
         formula: this.state.formula + '0' + event.target.value
     })}
-    //Do not add decimal point if number has one already
-    else if((/^[^.]*$/).test(this.state.output) && this.state.output !== "Misused operator") {
+    //Do not add decimal point if number has one already or if output is error
+    else if((/^[^.]*$/).test(this.state.output) && this.state.output !== "Misused operator" && this.state.output !== "DIGIT LIMIT MET") {
     this.setState({
       output: this.state.output + event.target.value,
       formula: this.state.formula + event.target.value
