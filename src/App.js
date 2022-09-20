@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import evaluate from 'evaluator.js';
-import {toFixed} from './Voidenotation.js'
+import {toFixed} from './Voidenotation.js';
+import {HiBackspace} from 'react-icons/hi';
 
 
 class App extends React.Component {
@@ -19,7 +20,8 @@ class App extends React.Component {
     this.calcResult = this.calcResult.bind(this)
     this.handleDecimal = this.handleDecimal.bind(this)
     this.handleClick = this.handleClick.bind(this)
-    this.handleKey = this.handleKey.bind(this)    
+    this.handleKey = this.handleKey.bind(this) 
+    this.handleMistake = this.handleMistake.bind(this)   
   }
 
 
@@ -169,17 +171,28 @@ class App extends React.Component {
     })}
     //Do not add decimal point if number has one already or if output is error
     else if((/^[^.]*$/).test(this.state.output) && this.state.output !== "Misused operator" && this.state.output !== "DIGIT LIMIT MET") {
-    this.setState({
-      output: this.state.output + inputValue,
-      formula: this.state.formula + inputValue
+      this.setState({
+        output: this.state.output + inputValue,
+        formula: this.state.formula + inputValue
   })}
   }
 
+  handleMistake() {
+    if((/=+/).test(this.state.formula)) {
+      this.handleClear();
+    }
+    else if((/[0-9]+/).test(this.state.output) && this.state.formula !== "") {
+      this.setState({
+        output: this.state.output.slice(0,-1),
+        formula: this.state.formula.slice(0,-1)
+    })
+  }
+}
+
 handleKey(event) {
-  console.log(event.key)
-  
-  if(event.key === "Enter") {
-    const button = document.getElementsByName(event.key);
+  event.preventDefault();
+  if(event.key === "Enter" || event.key === "=") {
+    const button = document.getElementsByName("Enter");
     button[0].classList.add('active')
     setTimeout(() => button[0].classList.remove('active'), 150)
     const val = "="
@@ -208,6 +221,12 @@ handleKey(event) {
     button[0].classList.add('active')
     setTimeout(() => button[0].classList.remove('active'), 150)
     this.handleClear();
+  }
+  if(event.key === "Backspace") {
+    const button = document.getElementsByName(event.key);
+    button[0].classList.add('active')
+    setTimeout(() => button[0].classList.remove('active'), 150)
+    this.handleMistake();
   }
 }
 
@@ -242,6 +261,12 @@ handleClick(event) {
     setTimeout(() => button[0].classList.remove('active'), 150)
     this.handleClear();
   }
+  if(event.target.value === "Backspace") {
+    const button = document.getElementsByName(event.target.value);
+    button[0].classList.add('active')
+    setTimeout(() => button[0].classList.remove('active'), 150)
+    this.handleMistake();
+  }
 }
 
 componentDidMount() {
@@ -262,6 +287,7 @@ componentWillUnmount() {
       </header>
       <main>
         <button id="clear" onClick={this.handleClick} value="" name="Delete">AC</button>
+        <button id="backspace" onClick={this.handleClick} value="Backspace" name="Backspace"><HiBackspace /></button>
         <button id="divide" onClick={this.handleClick} value="/" name="/">/</button>
         <button id="multiply" onClick={this.handleClick} value="*" name="*">x</button>
         <button id="seven" onClick={this.handleClick} value="7" name="7">7</button>
